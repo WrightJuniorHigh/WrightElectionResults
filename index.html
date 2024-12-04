@@ -63,9 +63,9 @@
 
     <script>
         window.onload = function() {
-            let candidates = JSON.parse(localStorage.getItem('candidates')) || [];
-
+            // Function to render candidates and update the chart
             function renderCandidates() {
+                let candidates = JSON.parse(localStorage.getItem('candidates')) || [];
                 const container = document.getElementById("candidates-container");
                 container.innerHTML = "";
                 candidates.forEach((candidate) => {
@@ -82,10 +82,11 @@
                     container.appendChild(candidateElement);
                 });
 
-                updateChart();
+                updateChart(candidates);
             }
 
-            function updateChart() {
+            // Function to update the pie chart
+            function updateChart(candidates) {
                 const labels = candidates.map(candidate => candidate.name);
                 const data = candidates.map(candidate => candidate.votes);
                 const colors = candidates.map(candidate => candidate.color);
@@ -111,7 +112,11 @@
                 });
             }
 
+            // Initial render
             renderCandidates();
+
+            // Set an interval to refresh every 5 seconds
+            setInterval(renderCandidates, 5000);
         }
     </script>
 </body>
