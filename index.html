@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Election Results</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -48,45 +49,69 @@
             border-radius: 10px;
             margin-top: 10px;
         }
+        canvas {
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="section-title">Presidential Election Results</div>
-        <div class="candidate" id="candidate-1">
-            <div class="candidate-name">INSERT Person's Name</div>
-            <img src="person1.jpg" alt="Candidate Photo">
-            <div class="vote-count">Counted Votes: <span id="votes-1">0</span></div>
-            <div class="tally-bar" id="tally-1"></div>
-        </div>
-
-        <div class="candidate" id="candidate-2">
-            <div class="candidate-name">INSERT Person's Name</div>
-            <img src="person2.jpg" alt="Candidate Photo">
-            <div class="vote-count">Counted Votes: <span id="votes-2">0</span></div>
-            <div class="tally-bar" id="tally-2"></div>
-        </div>
-
-        <div class="candidate" id="candidate-3">
-            <div class="candidate-name">INSERT Person's Name</div>
-            <img src="person3.jpg" alt="Candidate Photo">
-            <div class="vote-count">Counted Votes: <span id="votes-3">0</span></div>
-            <div class="tally-bar" id="tally-3"></div>
-        </div>
+        <div id="candidates-container"></div>
+        <canvas id="voteChart" width="400" height="400"></canvas>
     </div>
 
     <script>
-        // Load results from localStorage
         window.onload = function() {
-            if(localStorage.getItem("votes") && localStorage.getItem("colors")) {
-                let votes = JSON.parse(localStorage.getItem("votes"));
-                let colors = JSON.parse(localStorage.getItem("colors"));
-                for (let i = 1; i <= 3; i++) {
-                    document.getElementById(`votes-${i}`).textContent = votes[i];
-                    document.getElementById(`tally-${i}`).style.width = `${(votes[i] / (votes[1] + votes[2] + votes[3])) * 100}%`;
-                    document.getElementById(`tally-${i}`).style.backgroundColor = colors[i];
-                }
+            let candidates = JSON.parse(localStorage.getItem('candidates')) || [];
+
+            function renderCandidates() {
+                const container = document.getElementById("candidates-container");
+                container.innerHTML = "";
+                candidates.forEach((candidate) => {
+                    const candidateElement = document.createElement("div");
+                    candidateElement.classList.add("candidate");
+
+                    candidateElement.innerHTML = `
+                        <div class="candidate-name">${candidate.name}</div>
+                        <img src="${candidate.photo}" alt="Candidate Photo">
+                        <div class="vote-count">Counted Votes: ${candidate.votes}</div>
+                        <div class="tally-bar" style="background-color: ${candidate.color};"></div>
+                    `;
+
+                    container.appendChild(candidateElement);
+                });
+
+                updateChart();
             }
+
+            function updateChart() {
+                const labels = candidates.map(candidate => candidate.name);
+                const data = candidates.map(candidate => candidate.votes);
+                const colors = candidates.map(candidate => candidate.color);
+
+                const ctx = document.getElementById('voteChart').getContext('2d');
+                const voteChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: data,
+                            backgroundColor: colors,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                        },
+                    }
+                });
+            }
+
+            renderCandidates();
         }
     </script>
 </body>
