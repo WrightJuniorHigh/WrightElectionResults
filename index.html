@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Election Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .section-title {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .candidate {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+        .candidate img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        .candidate-name {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .vote-count {
+            font-size: 16px;
+        }
+        .tally-bar {
+            width: 100%;
+            height: 20px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="section-title">Presidential Election Results</div>
+        <div class="candidate" id="candidate-1">
+            <div class="candidate-name">INSERT Person's Name</div>
+            <img src="person1.jpg" alt="Candidate Photo">
+            <div class="vote-count">Counted Votes: <span id="votes-1">0</span></div>
+            <div class="tally-bar" id="tally-1"></div>
+        </div>
+
+        <div class="candidate" id="candidate-2">
+            <div class="candidate-name">INSERT Person's Name</div>
+            <img src="person2.jpg" alt="Candidate Photo">
+            <div class="vote-count">Counted Votes: <span id="votes-2">0</span></div>
+            <div class="tally-bar" id="tally-2"></div>
+        </div>
+
+        <div class="candidate" id="candidate-3">
+            <div class="candidate-name">INSERT Person's Name</div>
+            <img src="person3.jpg" alt="Candidate Photo">
+            <div class="vote-count">Counted Votes: <span id="votes-3">0</span></div>
+            <div class="tally-bar" id="tally-3"></div>
+        </div>
+    </div>
+
+    <script>
+        // Load results from localStorage
+        window.onload = function() {
+            if(localStorage.getItem("votes") && localStorage.getItem("colors")) {
+                let votes = JSON.parse(localStorage.getItem("votes"));
+                let colors = JSON.parse(localStorage.getItem("colors"));
+                for (let i = 1; i <= 3; i++) {
+                    document.getElementById(`votes-${i}`).textContent = votes[i];
+                    document.getElementById(`tally-${i}`).style.width = `${(votes[i] / (votes[1] + votes[2] + votes[3])) * 100}%`;
+                    document.getElementById(`tally-${i}`).style.backgroundColor = colors[i];
+                }
+            }
+        }
+    </script>
+</body>
+</html>
